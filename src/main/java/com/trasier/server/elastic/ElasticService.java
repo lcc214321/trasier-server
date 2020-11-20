@@ -63,7 +63,7 @@ public class ElasticService implements WriteService, Closeable {
 
     public void write(String accountId, String spaceKey, Span span) {
         IndexRequest indexRequest = createIndexRequest(accountId, spaceKey, span);
-        client.indexAsync(indexRequest, new ActionListener<>() {
+        client.indexAsync(indexRequest, new ActionListener<IndexResponse>() {
             @Override
             public void onResponse(IndexResponse response) {
                 //Currently ignored
