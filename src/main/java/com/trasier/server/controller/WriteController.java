@@ -19,7 +19,7 @@ public class WriteController {
         this.elasticService = elasticService;
     }
 
-    @Post(uri = "/accounts/{$accountId}/spaces/{$spaceKey}/spans", produces = MediaType.TEXT_PLAIN)
+    @Post(uri = "/accounts/{$accountId}/spaces/{$spaceKey}/spans", consumes = MediaType.APPLICATION_JSON, produces = MediaType.APPLICATION_JSON)
     public void postSpan(@PathVariable("$accountId") String accountId, @PathVariable("$spaceKey") String spaceKey, @Body List<Span> spans) {
         elasticService.writeSpans(accountId, spaceKey, spans);
     }

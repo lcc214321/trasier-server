@@ -11,12 +11,14 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Base64;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 import static org.elasticsearch.common.xcontent.XContentFactory.jsonBuilder;
 
 @Singleton
 public class ElasticConverter {
     private static final FastDateFormat DATE_FORMAT = FastDateFormat.getInstance("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+    private static final Pattern BASE64_PATTERN = Pattern.compile("^([A-Za-z0-9+/]{4})*([A-Za-z0-9+/]{3}=|[A-Za-z0-9+/]{2}==)?$");
 
     public static Span convert(SearchHit searchHit) {
         Span.SpanBuilder builder = Span.builder();
@@ -96,16 +98,28 @@ public class ElasticConverter {
             }
 
             if (span.getIncomingData() != null) {
-                builder.field("incomingData", new String(Base64.getDecoder().decode(span.getIncomingData())));
+                builder.field("incomingData", decodeBase64(span.getIncomingData()));
             }
 
             if (span.getOutgoingData() != null) {
-                builder.field("outgoingData", new String(Base64.getDecoder().decode(span.getOutgoingData())));
+                builder.field("outgoingData", decodeBase64(span.getOutgoingData()));
             }
 
             return builder.endObject();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private String decodeBase64(String incomingData) {
+        if(BASE64_PATTERN.matcher(incomingData).matches()) {
+            try {
+                return new String(Base64.getDecoder().decode(incomingData));
+            } catch(Exception e) {
+                //TODO log info?
+                //ignore and keep original message
+            }
+        }
+        return incomingData;
     }
 }
