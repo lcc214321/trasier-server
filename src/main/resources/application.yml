@@ -2,12 +2,5 @@ micronaut:
   application:
     name: trasier-server
 
-trasier.elastic:
-  namespace: default
-  hosts:
-    - localhost
-  port: 9200
-  scheme: http
-  index: default
-  type: event
-  cluster-name: default
+elasticsearch:
+  httpHosts: "http://localhost:9200,http://127.0.0.2:9200"
