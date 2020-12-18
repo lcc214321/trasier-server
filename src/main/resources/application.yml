@@ -2,5 +2,8 @@ micronaut:
   application:
     name: trasier-server
 
+jackson:
+  bean-introspection-module: true
+
 elasticsearch:
   httpHosts: "http://localhost:9200,http://127.0.0.2:9200"
